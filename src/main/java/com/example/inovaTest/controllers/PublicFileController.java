@@ -16,22 +16,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/files/event-photos")
-public class FileController {
+@RequestMapping("/public/files/event-photos")
+public class PublicFileController {
 
-    @PreAuthorize("isAuthenticated()") // Garante que só usuários autenticados podem acessar
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> getEventPhoto(@PathVariable String filename) {
         try {
             Path filePath = Paths.get(System.getProperty("user.dir"), "uploads", "event-photos", filename);
             Resource resource = new UrlResource(filePath.toUri());
+            
             if (!resource.exists() || !resource.isReadable()) {
                 return ResponseEntity.notFound().build();
             }
+            
             return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG) // ou detectar dinamicamente
+                    .contentType(MediaType.IMAGE_JPEG)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                     .body(resource);
+                    
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
         }
