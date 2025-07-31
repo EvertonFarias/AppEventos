@@ -21,7 +21,7 @@ public class EventService {
     private EventRepository eventRepository;
 
     public List<EventModel> findAll() {
-        return eventRepository.findAll();
+        return eventRepository.findAllByOrderByDateAsc();
     }
 
     public Optional<EventModel> findById(Long id) {
